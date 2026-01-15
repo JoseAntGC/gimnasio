@@ -1,0 +1,409 @@
+/* ========== Reset básico y caja consistente ========== */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}   
+
+/* ========== Variables de tema (modo oscuro + acento naranja/rojo) ========== */
+:root{ 
+  --negro:#000;
+  --oscuro:#121A27;
+  --azul_oscuro:#243244;
+  --blanco:#E6EAF2;
+  --gris:#9AA6B2;
+  --naranja:#FF6A00;
+  --rojo:#FF3B30;
+  --marron: rgba(255,106,0,.25);
+  --btn_grad: linear-gradient(135deg, #FF3B30 0%, #FF6A00 100%);
+}
+
+/* ========== Estilo global ========== */
+body{ 
+    display: block;    
+    background:var(--oscuro); 
+    color:var(--blanco); 
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ========== Header (logo, nav, CTA) ========== */
+header{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--negro);
+}
+/* contenedor del logo */
+#logo{
+    display: flex;
+    align-items: center;    
+}
+
+/* Botón con degradado */
+.boton{  
+  color:#fff;
+  background-image: linear-gradient(135deg, #FF3B30 0%, #FF6A00 100%);
+  box-shadow: 0 6px 18px rgba(255,106,0,.25);
+}
+
+.logo{
+    width: 50px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+/* ========== Navegación principal ========== */
+nav{
+    background-color:var(--negro); 
+}
+
+nav a{
+    padding: 10px;
+    text-decoration: none;
+    color: var(--blanco);
+    font-size: larger;
+}
+
+nav a:hover{
+    color: var(--naranja);
+}
+
+/* Texto con degradado (para palabras destacadas) */
+.letras_gradient{
+    background-image: var(--btn_grad);
+    background-clip: text;
+    color: transparent;
+}
+
+/* ========== Inicio ========== */
+#inicio{
+    background-image: /* Capa radial oscura sobre la foto, para legibilidad del texto */
+    radial-gradient(circle at center,
+      rgba(0,0,0,0.1) 0%,    /* centro casi transparente */
+      rgba(0,0,0,0.7) 70%,   /* se va oscureciendo */
+      rgba(0,0,0,0.9) 100%   /* bordes muy oscuros */
+    ), 
+    url("../img/foto_fondo.jpg");
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 700px;
+}
+
+#inicio h2{
+    font-weight: 900;
+    font-size: 4rem;
+    padding: 30px;
+}
+
+#inicio p{
+    font-weight: 500;
+    font-size: 2rem;
+    padding: 30px;
+}
+
+/* ========== Sección Nosotros ========== */
+#nosotros{
+    padding: 50px;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    background-image: linear-gradient(to bottom, var(--negro) 0%,var(--negro) 50% ,var(--oscuro) 100%);    
+}
+
+/* Separador decorativo en gradiente */
+.linea-gradiente{
+  width: 100%;
+  height: 4px; /* grosor de la línea */
+  background: linear-gradient(90deg, #FF3B30 0%, #FF6A00 100%);
+  border-radius: 999px;
+}
+
+#nosotros h2{
+    font-weight: 600;
+    font-size: 3rem;
+}
+
+/* Imagen lateral de gimnasio */
+.img_gym img{
+    width: 90%;
+    height: auto;
+    border-radius: 15px;
+    margin-left: 50px;
+    box-shadow: 0 6px 18px rgba(255,106,0,.25);
+    align-items: center;
+}
+/* Textos rojos destacados */
+.rojo{
+    color: var(--rojo);
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+/* Tarjetas de valores */
+.tarjetas{
+    display: flex;
+}
+
+.tarjeta{
+    width: 300px;
+    height: 150px;
+    border: 2px solid var(--blanco);
+    border-radius: 10px;
+    background-color: var(--azul_oscuro);    
+    padding: 1rem;
+    margin: 50px;
+}
+.tarjeta img{
+    width: 2rem;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+/* ========== Horarios ========== */
+#horarios{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+
+.icono_calendario{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 3rem;
+    width: 10%;
+}
+
+.icono_calendario img{
+    width: 30%;
+    height: auto;    
+    margin: 0 1rem;
+}
+
+.text_horario{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;   
+}
+.text_horario h2{       
+    font-weight: 900;
+}
+
+/* Contenedor de tabla (con borde y radio) */
+.tabla{
+    width: 80%;
+    overflow-x: auto;
+    border-radius: 2rem;
+    border: 2px solid var(--blanco);
+}
+
+
+.tabla table{
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table th{
+    background-image: var(--btn_grad)
+} 
+
+table td{
+    background-color: var(--azul_oscuro);
+}
+
+table th, td{
+    height: 30px;
+    border: var(--blanco) 2px solid;
+    padding: 5px;
+}
+
+/* Caja informativa de horario general */
+.horario{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;   
+    margin: 3rem;
+    border: var(--blanco) 2px solid;
+    border-radius: 10px;
+    background-color: var(--marron);
+}
+
+.horario img{
+    width: 5rem;
+    height: auto;    
+    margin-bottom: 1rem;
+}
+
+#actividades{
+    padding: 50px;  
+}
+
+/* Pastillas de clase dentro de la tabla */
+.borde{
+    display: inline-block;
+    border: var(--blanco) 2px solid;
+    background-color: var(--marron);
+    padding: 3px 10px;
+    border-radius: 10px;
+}
+
+/* ========== Galería ========== */
+/* Estilo para la galería de imágenes */
+#galeria{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-image: linear-gradient(to bottom, var(--oscuro) 0% ,var(--negro) 100%);    
+}
+
+.galeria{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    overflow: hidden;
+}
+
+.galeria figure{
+    width: 25%;
+    margin: 20px;
+    text-align: center;
+}
+
+.galeria img{    
+    width: 100%;
+    height: auto;
+    margin: 20px;
+    border: #fff 1px solid;
+    border-radius: 8px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.galeria img:hover{
+    transform: scale(1.05);
+}
+
+.galeria figcaption{
+    margin-top: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+/* ========== Footer ========== */
+footer{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--negro);
+    padding: 20px;
+}
+
+.logo_footer{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.redes img{
+    width: 40px;
+    height: auto;  
+    background-color: var(--azul_oscuro);
+    border: 2px solid var(--blanco);
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.contacto{
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+/* ========== Responsive (≤900px -500px) ========== */
+
+@media (max-width: 500px){
+
+    #inicio div h2{
+        width: 50%;        
+        font-weight: 500;
+        font-size: 3rem;
+        padding: 2px;
+    }
+    .tarjeta{
+        width: 80%;
+    }
+
+
+}
+
+@media (max-width: 900px){
+
+    nav{
+        display: none;
+    }
+
+    #inicio h2{
+        width: 80%;
+        font-weight: 700;
+        font-size: 3rem;
+        padding: 20px;
+    }
+
+    #inicio p{
+        font-weight: 400;
+        font-size: 1.5rem;
+        padding: 20px;
+    }
+
+    #nosotros{
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .img_gym img{
+        width: 80%;      
+    }
+
+    .tarjetas{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tabla{
+        overflow-x: auto;
+    }
+
+    .tabla table{
+        min-width: 800px;  
+    }
+
+    .galeria figure{
+        width: 80%;
+    }
+
+    
+    footer{
+        flex-direction: column;
+        justify-content: center;
+        align-items: baseline;
+    }
+
+}
+
+

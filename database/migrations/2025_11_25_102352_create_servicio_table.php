@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('servicio', function (Blueprint $table) {
+            $table->increments('id_servicio');
+            $table->unsignedInteger('id_gimnasio');
+            $table->string('nombre',120);
+            $table->string('descripcion',255)->nullable();
+            $table->boolean('activo')->default(true);
+            $table->timestamps();
+            // Único por gimnasio
+            $table->unique(['id_gimnasio','nombre']);
+            $table->index('id_gimnasio');
+            $table->foreign('id_gimnasio')->references('id_gimnasio')->on('gimnasio')
+                  ->onUpdate('cascade')->onDelete('restrict');
+
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('servicio');
+    }
+};

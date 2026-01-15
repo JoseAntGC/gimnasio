@@ -1,0 +1,58 @@
+/* Resetear estilos */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}   
+
+:root{ 
+  --negro:#0F1623;
+  --bg-800:#121A27;
+  --azul_ocuro:#243244;
+  --blanco:#E6EAF2;
+  --gris:#9AA6B2;
+  --naranja:#FF6A00;
+  --rojo:#FF3B30;
+  --marron: rgba(255,106,0,.25);
+  --btn-grad: linear-gradient(135deg, #FF3B30 0%, #FF6A00 100%);
+}
+
+/* Fondo global */
+body{ 
+  background:var(--negro); color:var(--blanco); 
+  background-image: url(../img/logoFondo.png);
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Tarjetas / contenedores */
+.login{
+  background: var(--gris);
+  border: 1px solid var(--azul_oscuro);
+  color: var(--blanco);
+  border-radius: 16px;
+}
+
+/* Navbar oscuro */
+.navbar-dark{ background: #0E1520 !important; border-bottom:1px solid var(--blanco); }
+
+.btn-primary{
+  border:0;
+  color:#fff;
+  background-image: linear-gradient(135deg, #FF3B30 0%, #FF6A00 100%);
+  box-shadow: 0 6px 18px rgba(255,106,0,.25);
+}
+.btn-primary:hover{ filter: brightness(1.05); }
+
+.fondo{
+  background: var(--azul_ocuro);
+  color: var(--blanco);
+}
+
+.fondoOpaco{
+  background-color: rgba(255, 255, 255, 0.5) !important; /* Blanco al 70% de opacidad */
+  backdrop-filter: blur(5px); /* añade un desenfoque elegante al fondo */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
