@@ -13,6 +13,7 @@
       <div class="mb-3">
         <label class="form-label">Gimnasio</label>
         <select name="id_gimnasio" class="form-select" required>
+           <option value="">— Selecciona —</option>
           @foreach($gimnasios as $g)
             <option value="{{ $g->id_gimnasio }}" @selected(old('id_gimnasio') === $g->id_gimnasio)>{{ $g->nombre }}</option>
           @endforeach
@@ -30,8 +31,8 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input name="DNI" class="form-control" value="{{ old('DNI') }}" required></div>
-      <div class="col-md-6 mb-3"><label class="form-label">Teléfono</label><input name="telefono" class="form-control" value="{{ old('telefono') }}" required></div>
+      <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input name="DNI" pattern="[0-9]{8}[A-Za-z]" maxlength="9" class="form-control" value="{{ old('DNI') }}" required></div>
+      <div class="col-md-6 mb-3"><label class="form-label">Teléfono</label><input name="telefono" inputmode="numeric" pattern="[6789][0-9]{8}" maxlength="9" class="form-control" value="{{ old('telefono') }}" required></div>
     </div>
 
     <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" value="{{ old('email') }}" required></div>

@@ -108,14 +108,21 @@ class UsuarioController extends Controller
      */
     public function store(Request $r)
     {
-         $empleado = auth('web')->user();
+        $empleado = auth('web')->user();
+        
+        // Normalización (consistencia + evita duplicados raros)
+        $r->merge([
+            'DNI'      => strtoupper(trim((string) $r->input('DNI'))),
+            'telefono' => preg_replace('/\s+/', '', (string) $r->input('telefono')),
+            'email'    => strtolower(trim((string) $r->input('email'))),
+        ]);
 
         $rules = [
             'nombre'    => ['required','string','max:100'],
             'apellidos' => ['required','string','max:150'],
-            'DNI'       => ['required','string','max:20','unique:usuarios,DNI'],
-            'email'     => ['required','email','max:150','unique:usuarios,email'],
-            'telefono'  => ['required','string','max:20'],
+            'DNI'       => ['required','regex:/^[0-9]{8}[A-Za-z]$/','unique:usuarios,DNI'],
+            'email'     => ['required','email:filter','max:150','lowercase','unique:usuarios,email'],
+            'telefono'  => ['required','regex:/^[6789][0-9]{8}$/'],
             'password'  => ['required','string','min:6'],
             'activo'    => ['required','boolean'],
             'categoria' => ['required','in:Principiante,Intermedio,Experto'],
@@ -170,12 +177,19 @@ class UsuarioController extends Controller
 
         $empleado = auth('web')->user();
 
+         // Normalización
+        $r->merge([
+            'DNI'      => strtoupper(trim((string) $r->input('DNI'))),
+            'telefono' => preg_replace('/\s+/', '', (string) $r->input('telefono')),
+            'email'    => strtolower(trim((string) $r->input('email'))),
+        ]);
+
         $rules = [
             'nombre'    => ['required','string','max:100'],
             'apellidos' => ['required','string','max:150'],
-            'DNI'       => ['required','string','max:20', Rule::unique('usuarios','DNI')->ignore($usuario->id_usuario,'id_usuario')],
-            'email'     => ['required','email','max:150', Rule::unique('usuarios','email')->ignore($usuario->id_usuario,'id_usuario')],
-            'telefono'  => ['required','string','max:20'],
+            'DNI'       => ['required','regex:/^[0-9]{8}[A-Za-z]$/', Rule::unique('usuarios','DNI')->ignore($usuario->id_usuario,'id_usuario')],
+            'email'     => ['required','email:filter','max:150','lowercase', Rule::unique('usuarios','email')->ignore($usuario->id_usuario,'id_usuario')],
+            'telefono'  => ['required','regex:/^[6789][0-9]{8}$/'],
             'password'  => ['nullable','string','min:6'],
             'activo'    => ['required','boolean'],
             'categoria' => ['required','in:Principiante,Intermedio,Experto'],
