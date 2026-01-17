@@ -7,11 +7,17 @@ use App\Models\Gimnasio;
 use Illuminate\Http\Request;
 
 /**
- * Controlador para la gestión de Servicios del gimnasio.
- * Solo accesible por Administradores.
+ * Clase ServicioController
+ * * Gestiona el ciclo de vida de los servicios ofrecidos por los gimnasios.
+ * Incluye funcionalidades de filtrado por contexto de sesión, validación de 
+ * unicidad compuesta (nombre/gimnasio) y operaciones CRUD estándar.
  */
 class ServicioController extends Controller
 {
+    /**
+    * Crea una nueva instancia del controlador y define los permisos.
+    * Requiere autenticación y el rol de 'Administrador' para todos los métodos.
+    */
     public function __construct()
     {
         // Solo administradores
@@ -19,8 +25,10 @@ class ServicioController extends Controller
     }
 
     /**
-     * Lista de servicios
-     */
+    * Muestra el listado de servicios, permitiendo filtrado por gimnasio activo.
+    * Si existe un `gimnasio_activo` en la sesión, los resultados se filtran por dicho ID.
+    * @return \Illuminate\View\View Vista con la colección de servicios paginada.
+    */
     public function index()
     {
         $query = Servicio::with('gimnasio')->orderBy('nombre');
@@ -36,8 +44,9 @@ class ServicioController extends Controller
 
 
     /**
-     * Formulario de creación de un servicio
-     */
+    * Muestra el formulario para crear un nuevo servicio.
+    * @return \Illuminate\View\View Vista con el listado de gimnasios disponibles.
+    */
     public function create()
     {
         $gimnasios = Gimnasio::orderBy('nombre')->get();
@@ -45,8 +54,12 @@ class ServicioController extends Controller
     }
 
     /**
-     * Guarda un nuevo servicio
-     */
+    * Almacena un nuevo servicio en la base de datos.
+    * Realiza una validación de unicidad manual: no permite dos servicios con el 
+    * mismo nombre dentro del mismo gimnasio.
+    * @param  \Illuminate\Http\Request  $request Datos del formulario.
+    * @return \Illuminate\Http\RedirectResponse Redirección al índice con mensaje de éxito o error de duplicidad.
+    */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -71,8 +84,10 @@ class ServicioController extends Controller
     }
     
     /**
-     * Formulario de edición de un servicio
-     */
+    * Muestra el formulario de edición para un servicio existente.
+    * @param  \App\Models\Servicio  $servicio Instancia del servicio (Route Model Binding).
+    * @return \Illuminate\View\View Vista de edición.
+    */
     public function edit(Servicio $servicio)
     {
         $gimnasios = Gimnasio::orderBy('nombre')->get();
@@ -80,8 +95,14 @@ class ServicioController extends Controller
     }
 
     /**
-     * Actualiza un servicio
-     */
+    * Actualiza la información del servicio especificado.
+    * Valida que el nombre no esté duplicado en el mismo gimnasio, 
+    * omitiendo el registro actual de la comprobación.
+    *
+    * @param  \Illuminate\Http\Request  $request Datos actualizados.
+    * @param  \App\Models\Servicio  $servicio Instancia del servicio a actualizar.
+    * @return \Illuminate\Http\RedirectResponse Redirección al índice.
+    */
     public function update(Request $request, Servicio $servicio)
     {
         $data = $request->validate([
@@ -107,8 +128,10 @@ class ServicioController extends Controller
     }
 
     /**
-     * Elimina un servicio
-     */
+    * Elimina un servicio de la base de datos.
+    * @param  \App\Models\Servicio  $servicio Instancia del servicio a eliminar.
+    * @return \Illuminate\Http\RedirectResponse Redirección al índice.
+    */
     public function destroy(Servicio $servicio)
     {
         $servicio->delete();

@@ -36,7 +36,7 @@ class SuscripcionController extends Controller
 {
     /**
      * Crea una nueva instancia del controlador.
-     * * Establece el middleware de autenticación y restringe el acceso a
+     * Establece el middleware de autenticación y restringe el acceso a
      * usuarios con roles de Administrador o Monitor.
      */
     public function __construct()

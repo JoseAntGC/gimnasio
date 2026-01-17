@@ -25,16 +25,32 @@ use App\Http\Controllers\PlanController;
 |
 */
 
+/**
+ * Definición del mapa de rutas del sistema de gestión de gimnasios.
+ * * Este archivo organiza los endpoints en tres grandes bloques:
+ * 1. **Acceso Público y Global**: Login y redirección inicial por rol.
+ * 2. **Administración de Recursos (Staff)**: Rutas para Admin, Monitor y Limpieza 
+ * protegidas por el middleware 'rol' y el guard por defecto.
+ * 3. **Portal del Socio (Clientes)**: Rutas bajo el guard 'usuario' y prefijo '/usuario'.
+*/
+
+
+// Página de bienvenida
 Route::view('/', 'welcome');
 
-// Auth (sin middlewares especiales)
+// Rutas de gestión de sesión para empleados/admin
 Route::get('/login',  [AuthController::class,'showLogin'])->name('login');
 Route::post('/login', [AuthController::class,'login'])->name('login.post');
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
-// Panel genérico (luego redirige según rol)
+// Punto de control para redirigir a los usuarios según su rol asignado
 Route::middleware('auth')->get('/panel', [DashboardController::class,'redirectByRole'])->name('panel');
 
+
+/**
+ * Rutas de Gestión de Servicios y Empleados.
+ * * Acceso exclusivo para usuarios con rol 'Administrador'.
+ */
 // Paneles por rol
 Route::middleware(['auth','rol:Administrador'])->get('/panel/admin', [DashboardController::class,'admin'])->name('panel.admin');
 Route::middleware(['auth','rol:Monitor,Limpieza'])->get('/panel/empleado', [DashboardController::class,'empleado'])->name('panel.empleado');
@@ -82,12 +98,22 @@ Route::middleware(['auth','rol:Administrador'])->group(function () {
     Route::delete('asignaciones/{asignacione}', [AsignacionController::class, 'destroy'])->name('asignaciones.destroy');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Portal Privado del Socio (Guard: usuario)
+|--------------------------------------------------------------------------
+|
+| Rutas destinadas al cliente final para la gestión de su perfil personal,
+| cambio de credenciales y acceso a material deportivo (rutinas).
+|
+*/
 Route::prefix('usuario')->middleware('auth:usuario')->group(function () {
     Route::get('/panel',               [UPortal::class, 'panel'])->name('u.panel');
     Route::get('/perfil',              [UPortal::class, 'perfil'])->name('u.perfil');
     Route::post('/perfil/password',    [UPortal::class, 'updatePassword'])->name('u.perfil.password');
     Route::get('/rutinas',             [UPortal::class, 'rutinas'])->name('u.rutinas');
 });
+
 
 // Gimnasio Contexto (selección de gimnasio)
 Route::middleware(['auth','rol:Administrador'])->group(function () {
@@ -106,5 +132,6 @@ Route::middleware(['auth','rol:Administrador'])->group(function () {
         ->parameters(['planes' => 'plan'])
         ->except(['show']);
 });
+
 
 

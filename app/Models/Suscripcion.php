@@ -23,17 +23,20 @@ class Suscripcion extends Model
     use HasFactory;
 
     /**
+     * Nombre de la tabla asociada al modelo.
      * @var string
      */
     protected $table = 'suscripcion';
 
     /**
+     * Clave primaria de la tabla.
      * @var string
      */
     protected $primaryKey = 'id_suscripcion';
 
     /**
-     * @var array<int,string>
+     * Atributos asignables de forma masiva.
+     * @var array<int, string>
      */
     protected $fillable = [
         'id_usuario',
@@ -46,7 +49,8 @@ class Suscripcion extends Model
     ];
 
     /**
-     * @var array<string,string>
+     * Atributos que deben ser convertidos a tipos nativos.
+     * @var array<string, string>
      */
     protected $casts = [
         'precio'     => 'decimal:2',

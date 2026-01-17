@@ -4,10 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migración para la creación de la tabla 'usuarios'.
+ * Esta tabla gestiona a los socios o clientes finales de los gimnasios.
+ * A diferencia de los empleados, estos cuentan con una 'categoria' deportiva
+ * que condiciona el acceso a recursos específicos (rutinas).
+ */
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecuta las operaciones de migración.
+     * Define la estructura de la tabla 'usuarios':
+     * - `id_usuario`: Identificador único del socio.
+     * - `id_gimnasio`: Relación con el centro donde el socio está inscrito.
+     * - `categoria`: Nivel de entrenamiento (afecta a la lógica de descarga de archivos).
+     * - `DNI` y `email`: Garantizan la identidad única del socio en el sistema.
+     * - `rememberToken`: Soporta la persistencia de sesión en el portal del usuario.
+     * * @return void
      */
     public function up(): void
     {
@@ -34,7 +47,9 @@ return new class extends Migration
     }
  
     /**
-     * Reverse the migrations.
+     * Revierte las operaciones de migración.
+     * Elimina la tabla 'usuarios' de la base de datos.
+     * * @return void
      */
     public function down(): void
     {

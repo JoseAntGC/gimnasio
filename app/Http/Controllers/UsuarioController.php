@@ -11,19 +11,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 /**
- * Controlador de Usuarios (clientes).
- *
- * Reglas de acceso:
- * - Administrador: puede ver/crear/editar/eliminar usuarios de cualquier gimnasio.
- * - Monitor: puede ver/crear/editar usuarios SOLO de su gimnasio. No puede cambiar el gimnasio de un usuario.
- * - Limpieza: no debería acceder (se bloqueará con 403 por middleware/CheckRol).
- */
+* Controlador de Usuarios (clientes).
+*
+* Reglas de acceso:
+* - Administrador: puede ver/crear/editar/eliminar usuarios de cualquier gimnasio.
+* - Monitor: puede ver/crear/editar usuarios SOLO de su gimnasio. No puede cambiar el gimnasio de un usuario.
+* - Limpieza: no debería acceder (se bloqueará con 403 por middleware/CheckRol).
+*/
 class UsuarioController extends Controller
 {
     /**
-     * Crea una nueva instancia del controlador.
-     * Configura el middleware de autenticación y restricción de roles.
-     */
+    * Crea una nueva instancia del controlador.
+    * Configura el middleware de autenticación y restricción de roles.
+    */
      public function __construct()
     {
         // Admin y Monitor pueden gestionar usuarios
@@ -31,11 +31,11 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Valida si el empleado actual tiene permiso para interactuar con un usuario específico.
-     * * @param  Usuario  $usuario
-     * @return void
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException 403 si no tiene permisos.
-     */
+    * Valida si el empleado actual tiene permiso para interactuar con un usuario específico.
+    * @param  Usuario  $usuario
+    * @return void
+    * @throws \Symfony\Component\HttpKernel\Exception\HttpException 403 si no tiene permisos.
+    */
     private function assertMismoGimnasio(Usuario $usuario): void
     {
         $empleado = auth('web')->user();
@@ -58,11 +58,11 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Muestra el listado de usuarios.
-     * * Los administradores ven todos los usuarios, mientras que los monitores
-     * solo ven los usuarios pertenecientes a su gimnasio.
-     * * @return View
-     */
+    * Muestra el listado de usuarios.
+    * Los administradores ven todos los usuarios, mientras que los monitores
+    * solo ven los usuarios pertenecientes a su gimnasio.
+    * @return View
+    */
     public function index()
     {
         $empleado = auth('web')->user();
@@ -86,9 +86,9 @@ class UsuarioController extends Controller
 
 
     /**
-     * Muestra el formulario para crear un nuevo usuario.
-     * * @return View
-     */
+    * Muestra el formulario para crear un nuevo usuario.
+    * @return View
+    */
     public function create()
     {
         $empleado = auth('web')->user();
@@ -101,11 +101,11 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Almacena un usuario recién creado en la base de datos.
-     * * @param  Request  $r
-     * @return RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    * Almacena un usuario recién creado en la base de datos.
+    * @param  Request  $r
+    * @return RedirectResponse
+    * @throws \Illuminate\Validation\ValidationException
+    */
     public function store(Request $r)
     {
         $empleado = auth('web')->user();
@@ -147,10 +147,10 @@ class UsuarioController extends Controller
     }
 
     /** 
-     * Muestra el formulario de edición para un usuario específico.
-     * * @param  Usuario  $usuario
-     * @return View
-     */
+    * Muestra el formulario de edición para un usuario específico.
+    * @param  Usuario  $usuario
+    * @return View
+    */
     public function edit(Usuario $usuario)
     {
        $this->assertMismoGimnasio($usuario);
@@ -165,12 +165,12 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Actualiza un usuario específico en la base de datos.
-     * * @param  Request  $r
-     * @param  Usuario  $usuario
-     * @return RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    * Actualiza un usuario específico en la base de datos.
+    * @param  Request  $r
+    * @param  Usuario  $usuario
+    * @return RedirectResponse
+    * @throws \Illuminate\Validation\ValidationException
+    */
     public function update(Request $r, Usuario $usuario)
     {
         $this->assertMismoGimnasio($usuario);
@@ -218,10 +218,10 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Elimina un usuario específico de la base de datos.
-     * * @param  Usuario  $usuario
-     * @return RedirectResponse
-     */
+    * Elimina un usuario específico de la base de datos.
+    * @param  Usuario  $usuario
+    * @return RedirectResponse
+    */
     public function destroy(Usuario $usuario)
     {
         $this->assertMismoGimnasio($usuario);

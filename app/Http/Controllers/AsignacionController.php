@@ -19,6 +19,16 @@ use Illuminate\Validation\ValidationException;
  */
 class AsignacionController extends Controller
 {
+
+    /**
+     * Constructor del controlador.
+     * * Establece las capas de seguridad y restricciones de acceso mediante middlewares:
+     * * 1. **Acceso de Lectura (index):** Permite la entrada a usuarios autenticados 
+     * con roles de 'Administrador' o 'Monitor'.
+     * 2. **Acceso de Gestión (otros métodos):** Restringe las acciones de creación, 
+     * edición y borrado exclusivamente a usuarios con el rol 'Administrador'.
+     * * @return void
+     */
      public function __construct()
     {
         // Ver listado: Admin y Monitor
