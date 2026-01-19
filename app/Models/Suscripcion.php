@@ -88,4 +88,27 @@ class Suscripcion extends Model
     {
         return $this->belongsTo(Plan::class, 'id_plan', 'id_plan');
     }
+
+    /**
+     * Obtiene todos los pagos asociados a la suscripción.
+     * * Incluye pagos en cualquier estado (pagado, pendiente, anulado).
+     * * @return \Illuminate\Database\Eloquent\Relations\HasMany Relación de uno a muchos con el modelo Pago.
+     */
+    public function pagos()
+    {
+        return $this->hasMany(\App\Models\Pago::class, 'id_suscripcion', 'id_suscripcion');
+    }
+
+    /**
+     * Obtiene el pago más reciente que ha sido marcado como 'pagado'.
+     * * * Utilidad: Ideal para verificar rápidamente la última vez que el socio 
+     * realizó un abono efectivo o para mostrar la fecha de última facturación.
+     * * @return \Illuminate\Database\Eloquent\Relations\HasOne Relación de uno a uno filtrada por estado y orden cronológico.
+     */
+    public function ultimoPago()
+    {
+        return $this->hasOne(\App\Models\Pago::class, 'id_suscripcion', 'id_suscripcion')
+            ->where('estado','pagado')
+            ->latest('fecha_pago');
+    }
 }

@@ -22,7 +22,6 @@
           </option>
         @endforeach
       </select>
-      <div class="form-text">Solo aparecen usuarios activos del gimnasio permitido.</div>
     </div>
 
     <div class="mb-3">
@@ -37,7 +36,6 @@
           </option>
         @endforeach
       </select>
-      <div class="form-text">El precio se guardará automáticamente según el plan elegido.</div>
     </div>
 
     {{-- Precio solo informativo (NO se envía) --}}

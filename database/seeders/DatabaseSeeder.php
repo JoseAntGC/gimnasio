@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class,        // planes referencian servicio
             SuscripcionSeeder::class,// suscripciones usan usuario + gimnasio
             AsignacionSeeder::class, // asignaciones usan empleado + servicio
+            PagoSeeder::class,       // pagos usan suscripciones
         ]);
     }
 }

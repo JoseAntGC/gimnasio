@@ -60,7 +60,7 @@ class SuscripcionController extends Controller
     {
         $empleado = auth('web')->user();
 
-        $query = Suscripcion::with(['usuario', 'gimnasio', 'plan'])
+        $query = Suscripcion::with(['usuario', 'gimnasio', 'ultimoPago'])
             ->orderByDesc('id_suscripcion');
 
         if ($empleado->rol === 'Administrador' && session('gimnasio_activo')) {

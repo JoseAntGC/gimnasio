@@ -13,6 +13,7 @@ use App\Http\Controllers\usuario\PortalController as UPortal;
 use App\Http\Controllers\GimnasioContextController;
 use App\Http\Controllers\Admin\ContextoGimnasioController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\PagoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,6 +133,18 @@ Route::middleware(['auth','rol:Administrador'])->group(function () {
         ->parameters(['planes' => 'plan'])
         ->except(['show']);
 });
+
+//ruta pagos
+Route::middleware(['auth','rol:Administrador,Monitor'])->group(function () {
+    Route::get('suscripciones/{suscripcion}/pagos', [PagoController::class, 'index'])->name('pagos.index');
+    Route::get('suscripciones/{suscripcion}/pagos/create', [PagoController::class, 'create'])->name('pagos.create');
+    Route::post('suscripciones/{suscripcion}/pagos', [PagoController::class, 'store'])->name('pagos.store');
+
+    // NUEVAS
+    Route::get('suscripciones/{suscripcion}/pagos/{pago}/edit', [PagoController::class, 'edit'])->name('pagos.edit');
+    Route::put('suscripciones/{suscripcion}/pagos/{pago}', [PagoController::class, 'update'])->name('pagos.update');
+});
+
 
 
 

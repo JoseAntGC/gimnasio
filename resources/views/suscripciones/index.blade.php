@@ -23,6 +23,8 @@
           <th>Alta</th>
           <th>Baja</th>
           <th>Activa</th>
+          <th>Último pago</th>
+          <th>Estado pago</th>
           <th class="text-end">Acciones</th>
         </tr>
       </thead>
@@ -44,11 +46,25 @@
               @else
                 <span class="badge bg-secondary">No</span>
               @endif
+            </td>            
+            @php
+              $p = $s->ultimoPago;
+              $mesActual = now()->startOfMonth()->toDateString();
+              $alDia = $p && $p->periodo?->toDateString() === $mesActual;
+            @endphp
+            <td>
+              {{ $p ? $p->fecha_pago->format('Y-m-d') : '—' }}
             </td>
-
+            <td>
+              @if($alDia)
+                <span class="badge bg-success">Al día</span>
+              @else
+                <span class="badge bg-warning text-dark">Pendiente</span>
+              @endif
+            </td>
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="{{ route('suscripciones.edit',$s) }}">Editar</a>
-
+              <a href="{{ route('pagos.index', $s) }}" class="btn btn-sm btn-outline-success">Pagos</a>
               {{-- Solo Admin ve eliminar --}}
               @if(auth('web')->check() && auth('web')->user()->rol === 'Administrador')
                 <form method="POST" action="{{ route('suscripciones.destroy',$s) }}" class="d-inline"
