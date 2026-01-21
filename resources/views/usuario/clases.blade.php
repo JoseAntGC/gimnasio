@@ -24,7 +24,7 @@
     </div>
      <div class="col-md-4">
         <select name="servicio" class="form-select">
-        <option value="">Todos los servicios</option>
+        <option value="">Todos las Clases</option>
         @foreach($servicios as $srv)
             <option value="{{ $srv->id_servicio }}"
             @selected(request('servicio') == $srv->id_servicio)>

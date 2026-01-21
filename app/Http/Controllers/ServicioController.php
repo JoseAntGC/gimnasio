@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Servicio;
 use App\Models\Gimnasio;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Clase ServicioController
@@ -85,7 +86,7 @@ class ServicioController extends Controller
     
     /**
     * Muestra el formulario de edición para un servicio existente.
-    * @param  \App\Models\Servicio  $servicio Instancia del servicio (Route Model Binding).
+    * @param  \App\Models\Servicio  $servicio Instancia del servicio.
     * @return \Illuminate\View\View Vista de edición.
     */
     public function edit(Servicio $servicio)
@@ -96,12 +97,15 @@ class ServicioController extends Controller
 
     /**
     * Actualiza la información del servicio especificado.
-    * Valida que el nombre no esté duplicado en el mismo gimnasio, 
-    * omitiendo el registro actual de la comprobación.
+    *
+    * Reglas:
+    * - Valida campos básicos.
+    * - El nombre no puede repetirse dentro del mismo gimnasio (excepto el propio servicio).
+    * - No se permite desactivar un servicio si tiene asignaciones (clases) asociadas.
     *
     * @param  \Illuminate\Http\Request  $request Datos actualizados.
-    * @param  \App\Models\Servicio  $servicio Instancia del servicio a actualizar.
-    * @return \Illuminate\Http\RedirectResponse Redirección al índice.
+    * @param  \App\Models\Servicio      $servicio Instancia del servicio a actualizar.
+    * @return \Illuminate\Http\RedirectResponse
     */
     public function update(Request $request, Servicio $servicio)
     {
@@ -113,18 +117,33 @@ class ServicioController extends Controller
         ]);
 
         // Comprobar duplicados excepto este mismo servicio
-        $exists = Servicio::where('id_gimnasio',$data['id_gimnasio'])
-            ->where('nombre',$data['nombre'])
-            ->where('id_servicio','<>',$servicio->id_servicio)
+        $exists = Servicio::where('id_gimnasio', $data['id_gimnasio'])
+            ->where('nombre', $data['nombre'])
+            ->where('id_servicio', '<>', $servicio->id_servicio)
             ->exists();
+
         if ($exists) {
             return back()
                 ->withErrors(['nombre' => 'Ya existe un servicio con ese nombre en este gimnasio.'])
                 ->withInput();
         }
 
+        // No permitir desactivar si tiene asignaciones
+        if ((int)$servicio->activo === 1 && (int)$data['activo'] === 0) {
+            $tieneAsignaciones = $servicio->asignaciones()->exists();
+
+            if ($tieneAsignaciones) {
+                return back()
+                    ->withErrors(['activo' => 'No puedes desactivar el servicio porque tiene asignaciones. Elimina o reasigna las asignaciones primero.'])
+                    ->withInput();
+            }
+        }
+
         $servicio->update($data);
-        return redirect()->route('servicios.index')->with('ok','Servicio actualizado');
+
+        return redirect()
+            ->route('servicios.index')
+            ->with('ok', 'Servicio actualizado');
     }
 
     /**
