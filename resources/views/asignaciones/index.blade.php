@@ -23,6 +23,30 @@
     <div class="alert alert-danger">{{ $errors->first() }}</div>
   @endif
 
+  <form method="GET" class="row g-2 mb-3">
+    <div class="col-md-3">
+      <select name="dia" class="form-select">
+        <option value="">Todos los días</option>
+        @foreach($dias as $d)
+          <option value="{{ $d }}" @selected(request('dia') === $d)>
+            {{ $d }}
+          </option>
+        @endforeach
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">Filtrar</button>
+    </div>
+
+    @if(request('dia'))
+      <div class="col-md-2">
+        <a href="{{ route('asignaciones.index') }}" class="btn btn-primary w-100">Limpiar</a>
+      </div>
+    @endif
+  </form>
+
+
   <div class="table-responsive">
     <table class="table table-striped align-middle">
       <thead>

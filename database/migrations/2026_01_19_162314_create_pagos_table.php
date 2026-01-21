@@ -33,7 +33,7 @@ return new class extends Migration
             $table->date('periodo'); // día 1 del mes que cubre (ej: 2026-01-01)
 
             $table->decimal('importe', 8, 2);
-            $table->dateTime('fecha_pago');
+            $table->dateTime('fecha_pago')->nullable();
 
             $table->enum('metodo', ['efectivo','tarjeta','transferencia'])->default('tarjeta');
             $table->enum('estado', ['pagado','pendiente','anulado'])->default('pagado');

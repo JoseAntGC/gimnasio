@@ -58,31 +58,61 @@ class UsuarioController extends Controller
     }
 
     /**
-    * Muestra el listado de usuarios.
-    * Los administradores ven todos los usuarios, mientras que los monitores
-    * solo ven los usuarios pertenecientes a su gimnasio.
-    * @return View
-    */
-    public function index()
+     * Muestra el listado de usuarios con búsqueda y orden.
+     *
+     * - Búsqueda opcional por: nombre, apellidos, email, DNI, teléfono.
+     * - Orden: activos primero, después apellidos y nombre.
+     * - Administrador:
+     *   - Si existe session('gimnasio_activo'), filtra por ese gimnasio.
+     *   - Si no existe, muestra todos.
+     * - Monitor:
+     *   - Solo usuarios de su gimnasio.
+     */
+    public function index(Request $r)
     {
         $empleado = auth('web')->user();
 
-        $query = Usuario::with('gimnasio')->orderBy('apellidos');
+        $estado = $r->query('estado'); // activa | inactiva | null
+        $q      = trim((string) $r->query('q'));
 
-        // Admin: filtra por gimnasio activo si existe
+        $query = Usuario::query()->with('gimnasio');
+
+        // ===== Control por gimnasio =====
         if ($empleado->rol === 'Administrador' && session('gimnasio_activo')) {
-            $query->where('id_gimnasio', session('gimnasio_activo'));
+            $query->where('usuarios.id_gimnasio', session('gimnasio_activo'));
+        } elseif ($empleado->rol === 'Monitor') {
+            $query->where('usuarios.id_gimnasio', $empleado->id_gimnasio);
         }
 
-        // Monitor: solo su gimnasio
-        if ($empleado->rol === 'Monitor') {
-            $query->where('id_gimnasio', $empleado->id_gimnasio);
+        // ===== Estado =====
+        if ($estado === 'activa') {
+            $query->where('usuarios.activo', 1);
+        } elseif ($estado === 'inactiva') {
+            $query->where('usuarios.activo', 0);
         }
 
-        $usuarios = $query->paginate(10);
+        // ===== Buscador =====
+        if ($q !== '') {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('usuarios.apellidos', 'like', "%{$q}%")
+                    ->orWhere('usuarios.nombre', 'like', "%{$q}%")
+                    ->orWhere('usuarios.DNI', 'like', "%{$q}%")
+                    ->orWhere('usuarios.email', 'like', "%{$q}%")
+                    ->orWhere('usuarios.telefono', 'like', "%{$q}%");
+            });
+        }
+
+        // ===== Orden =====
+        // Activos primero, luego apellidos y nombre
+        $query->orderByDesc('usuarios.activo')
+            ->orderBy('usuarios.apellidos')
+            ->orderBy('usuarios.nombre');
+
+        $usuarios = $query->paginate(10)->withQueryString();
 
         return view('usuarios.index', compact('usuarios'));
     }
+
 
 
     /**
@@ -216,17 +246,5 @@ class UsuarioController extends Controller
 
         return redirect()->route('usuarios.index')->with('ok','Usuario actualizado');
     }
-
-    /**
-    * Elimina un usuario específico de la base de datos.
-    * @param  Usuario  $usuario
-    * @return RedirectResponse
-    */
-    public function destroy(Usuario $usuario)
-    {
-        $this->assertMismoGimnasio($usuario);
-
-        $usuario->delete();
-        return redirect()->route('usuarios.index')->with('ok','Usuario eliminado');
-    }
+   
 }

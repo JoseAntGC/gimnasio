@@ -128,13 +128,34 @@ class ServicioController extends Controller
     }
 
     /**
-    * Elimina un servicio de la base de datos.
-    * @param  \App\Models\Servicio  $servicio Instancia del servicio a eliminar.
-    * @return \Illuminate\Http\RedirectResponse Redirección al índice.
-    */
+     * Elimina un servicio de la base de datos.
+     *
+     * Regla de negocio:
+     * - No se permite eliminar un servicio si tiene asignaciones (empleados).
+     *
+     * @param  \App\Models\Servicio  $servicio
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Servicio $servicio)
     {
-        $servicio->delete();
-        return redirect()->route('servicios.index')->with('ok','Servicio eliminado');
+        // Si el servicio tiene asignaciones, no se puede eliminar
+        if ($servicio->asignaciones()->exists()) {
+            return redirect()
+                ->route('servicios.index')
+                ->with('error', 'No se puede eliminar el servicio porque tiene empleados asignados.');
+        }
+
+        try {
+            $servicio->delete();
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('servicios.index')
+                ->with('error', 'No se puede eliminar el servicio porque está siendo utilizado.');
+        }
+
+        return redirect()
+            ->route('servicios.index')
+            ->with('ok', 'Servicio eliminado correctamente.');
     }
+
 }

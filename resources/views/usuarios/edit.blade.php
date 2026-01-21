@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container py-4">
-  <h1 class="h4 mb-3">Editar usuario #{{ $usuario->id_usuario }}</h1>
+  <h1 class="h4 mb-3">Editar usuario #{{ $usuario->nombre }} {{ $usuario->apellidos}}</h1>
   @if ($errors->any()) <div class="alert alert-danger">{{ $errors->first() }}</div> @endif
 
   <form method="POST" action="{{ route('usuarios.update',$usuario) }}">

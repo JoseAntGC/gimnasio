@@ -21,9 +21,6 @@
       <label class="form-label">Precio (€)</label>
       <input name="precio" type="number" step="0.01" min="0" class="form-control"
              value="{{ old('precio',$plan->precio) }}" required>
-      <div class="form-text">
-        Cambiar el precio aquí NO cambia precios históricos de suscripciones ya creadas.
-      </div>
     </div>
 
     <div class="mb-3">

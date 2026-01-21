@@ -27,7 +27,7 @@ class Pago extends Model
         'observaciones',
     ];
 
-    protected $casts = [
+    protected $casts = [        
         'periodo'    => 'date',
         'fecha_pago' => 'datetime',
         'importe'    => 'decimal:2',

@@ -37,7 +37,7 @@ return new class extends Migration
             $table->time('hora');
             $table->timestamps();
 
-            $table->unique(['id_empleado','id_servicio','dia','hora']);
+            $table->unique(['id_empleado','dia','hora']);
             $table->foreign('id_empleado')->references('id_empleado')->on('empleado')
                   ->onUpdate('cascade')->onDelete('restrict');
             $table->foreign('id_servicio')->references('id_servicio')->on('servicio')

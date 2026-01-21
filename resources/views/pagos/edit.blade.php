@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container py-4" style="max-width: 720px; margin: 0 auto;">
-  <h1 class="h4 mb-3">Editar pago #{{ $pago->id_pago }}</h1>
+  <h1 class="h4 mb-3">Editar pago</h1>
 
   <div class="alert alert-info">
     Suscripción #{{ $suscripcion->id_suscripcion }} —
@@ -19,16 +19,14 @@
 
     <div class="mb-3">
       <label class="form-label">Periodo</label>
-      <input type="month" class="form-control"
-             value="{{ optional($pago->periodo)->format('Y-m') ?? '' }}" readonly>
-      <div class="form-text">El periodo no se cambia (evita duplicados).</div>
+      <input type="month" class="form-control" name ="periodo"
+             value="{{ optional($pago->periodo)->format('Y-m') ?? '' }}">
     </div>
 
     <div class="mb-3">
       <label class="form-label">Importe (€)</label>
       <input type="number" class="form-control"
              value="{{ old('importe', $pago->importe) }}" readonly>
-      <div class="form-text">El importe no se edita desde aquí.</div>
     </div>
 
     <div class="mb-3">

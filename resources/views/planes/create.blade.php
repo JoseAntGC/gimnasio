@@ -15,7 +15,6 @@
     <div class="mb-3">
       <label class="form-label">Nombre</label>
       <input name="nombre" class="form-control" value="{{ old('nombre') }}" required maxlength="120">
-      <div class="form-text">Ej: maquinas, clases, maquinas+clases, natación, plan completo.</div>
     </div>
 
     <div class="mb-3">

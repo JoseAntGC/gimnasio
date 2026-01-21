@@ -64,21 +64,9 @@ Route::middleware(['auth','rol:Administrador,Monitor'])->group(function () {
     Route::resource('suscripciones', SuscripcionController::class)->except(['show','destroy']);
 });
 
-// Solo Admin: borrar
-Route::middleware(['auth','rol:Administrador'])->group(function () {
-    Route::delete('suscripciones/{suscripcione}', [SuscripcionController::class,'destroy'])
-        ->name('suscripciones.destroy');
-});
-
 // Admin y Monitor: todo menos borrar
 Route::middleware(['auth','rol:Administrador,Monitor'])->group(function () {
     Route::resource('usuarios', UsuarioController::class)->except(['show','destroy']);
-});
-
-// Solo Admin: borrar
-Route::middleware(['auth','rol:Administrador'])->group(function () {
-    Route::delete('usuarios/{usuario}', [UsuarioController::class,'destroy'])
-        ->name('usuarios.destroy'); 
 });
 
 Route::middleware(['auth','rol:Administrador'])->group(function () {

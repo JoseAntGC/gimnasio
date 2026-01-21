@@ -56,23 +56,52 @@ class SuscripcionController extends Controller
      *
      * @return \Illuminate\View\View
     */
-    public function index()
+    public function index(Request $request)
     {
         $empleado = auth('web')->user();
+        $q = trim((string) $request->get('q', ''));
+        $estado = $request->get('estado'); // 'activa' | 'inactiva' | null
 
-        $query = Suscripcion::with(['usuario', 'gimnasio', 'ultimoPago'])
-            ->orderByDesc('id_suscripcion');
+        $query = Suscripcion::query()
+            ->with(['usuario','gimnasio','plan','ultimoPago']) 
+            ->join('usuarios', 'suscripcion.id_usuario', '=', 'usuarios.id_usuario')
+            ->select('suscripcion.*');
 
+        // Filtro por gimnasio
         if ($empleado->rol === 'Administrador' && session('gimnasio_activo')) {
-            $query->where('id_gimnasio', (int) session('gimnasio_activo'));
+            $query->where('suscripcion.id_gimnasio', (int) session('gimnasio_activo'));
         } elseif ($empleado->rol !== 'Administrador') {
-            $query->where('id_gimnasio', (int) $empleado->id_gimnasio);
+            $query->where('suscripcion.id_gimnasio', (int) $empleado->id_gimnasio);
         }
 
-        $suscripciones = $query->paginate(10);
+        // Filtro por estado
+        if ($estado === 'activa') {
+            $query->where('suscripcion.activa', 1);
+        } elseif ($estado === 'inactiva') {
+            $query->where('suscripcion.activa', 0);
+        }
 
-        return view('suscripciones.index', compact('suscripciones'));
+        // Búsqueda por usuario
+        if ($q !== '') {
+            $query->where(function ($w) use ($q) {
+                $w->where('usuarios.nombre', 'like', "%{$q}%")
+                ->orWhere('usuarios.apellidos', 'like', "%{$q}%")
+                ->orWhere('usuarios.email', 'like', "%{$q}%")
+                ->orWhere('usuarios.DNI', 'like', "%{$q}%");
+            });
+        }
+
+        // Orden: activos primero, luego apellidos/nombre
+        $query->orderByDesc('suscripcion.activa')
+            ->orderBy('usuarios.apellidos')
+            ->orderBy('usuarios.nombre')
+            ->orderByDesc('suscripcion.id_suscripcion');
+
+        $suscripciones = $query->paginate(10)->withQueryString();
+
+        return view('suscripciones.index', compact('suscripciones', 'q', 'estado'));
     }
+
 
 
      /**
@@ -301,30 +330,5 @@ class SuscripcionController extends Controller
         $suscripcion->update($data);
 
         return redirect()->route('suscripciones.index')->with('ok', 'Suscripción actualizada');
-    }
-
-    /**
-     * Elimina una suscripción.
-     *
-     * Nota: si en tu interfaz ya solo muestras el botón a Administrador,
-     * igualmente es recomendable protegerlo también aquí con rol:Administrador.
-     *
-     * Si prefieres dejarlo tal cual y solo usarlo para admin, puedes:
-     * - o añadir un middleware en rutas para destroy
-     * - o comprobar rol aquí (ver comentario).
-     *
-     * @param  \App\Models\Suscripcion  $suscripcione
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Suscripcion $suscripcione)
-    {
-        // Recomendación extra de seguridad: solo admin
-        // if (auth('web')->user()->rol !== 'Administrador') abort(403);
-
-        $this->assertMismoGimnasio($suscripcione);
-
-        $suscripcione->delete();
-
-        return redirect()->route('suscripciones.index')->with('ok', 'Suscripción eliminada correctamente.');
-    }
+    } 
 }

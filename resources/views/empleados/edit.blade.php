@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container py-4">
-  <h1 class="h4 mb-3">Editar empleado #{{ $empleado->id_empleado }}</h1>
+  <h1 class="h4 mb-3">Editar empleado #{{ $empleado->nombre }}</h1>
   @if ($errors->any()) <div class="alert alert-danger">{{ $errors->first() }}</div> @endif
 
   <form method="POST" action="{{ route('empleados.update',$empleado) }}">
@@ -34,18 +34,34 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <label class="form-label">Rol</label>
-        <select name="rol" class="form-select" required>
+        @php $esPropio = auth('web')->id() === $empleado->id_empleado; @endphp
+
+        <select name="rol" class="form-select" @disabled($esPropio) required>
           @foreach(['Administrador','Monitor','Limpieza'] as $rol)
             <option value="{{ $rol }}" @selected(old('rol',$empleado->rol)===$rol)>{{ $rol }}</option>
           @endforeach
         </select>
+
+        @if($esPropio)
+          <div class="form-text text-white">No puedes cambiar de rol.</div>
+          {{-- Truco: como el select está disabled, no se envía; mandamos el valor actual --}}
+          <input type="hidden" name="activo" value="{{ $empleado->rol}}">
+        @endif
       </div>
       <div class="col-md-6 mb-3">
         <label class="form-label">Activo</label>
-        <select name="activo" class="form-select">
+        @php $esPropio = auth('web')->id() === $empleado->id_empleado; @endphp
+
+        <select name="activo" class="form-select" @disabled($esPropio)>
           <option value="1" @selected(old('activo',$empleado->activo)=='1')>Sí</option>
           <option value="0" @selected(old('activo',$empleado->activo)=='0')>No</option>
         </select>
+
+        @if($esPropio)
+          <div class="form-text text-white">No puedes desactivar tu propia cuenta.</div>
+          {{-- Truco: como el select está disabled, no se envía; mandamos el valor actual --}}
+          <input type="hidden" name="activo" value="{{ $empleado->activo ? 1 : 0 }}">
+        @endif
       </div>
     </div>
 

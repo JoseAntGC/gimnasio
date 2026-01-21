@@ -9,7 +9,7 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
       <h1 class="h4 m-0">Pagos</h1>
-      <div class="text-muted small">
+      <div class="text-white small">
         Suscripción #{{ $suscripcion->id_suscripcion }}
         —
         Usuario: {{ optional($suscripcion->usuario)->nombre }}

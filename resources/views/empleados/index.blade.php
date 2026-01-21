@@ -10,20 +10,47 @@
 
   @if(session('ok')) <div class="alert alert-success">{{ session('ok') }}</div> @endif
   @if($errors->any()) <div class="alert alert-danger">{{ $errors->first() }}</div> @endif
+  
+  <form class="row g-2 mb-3" method="GET" action="{{ route('empleados.index') }}">
+  <div class="col-md-4">
+    <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, apellidos, email, DNI..." value="{{ request('q') }}">
+  </div>
+
+  @if(auth('web')->user()->rol === 'Administrador')
+    <div class="col-md-4">
+      <select name="id_gimnasio" class="form-select">
+        <option value="">— Todos los gimnasios —</option>
+        @foreach($gimnasios as $g)
+          <option value="{{ $g->id_gimnasio }}" @selected((string)request('id_gimnasio') === (string)$g->id_gimnasio)>
+            {{ $g->nombre }}
+          </option>
+        @endforeach
+      </select>
+    </div>
+  @endif
+
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">Filtrar</button>
+  </div>
+
+  <div class="col-md-2">
+    <a class="btn btn-primary w-100" href="{{ route('empleados.index') }}">Limpiar</a>
+  </div>
+</form>
+
 
   <div class="table-responsive">
     <table class="table table-striped align-middle">
       <thead>
         <tr>
-          <th>#</th><th>Gimnasio</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th class="text-end">Acciones</th>
+          <th>Gimnasio</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th class="text-end">Acciones</th>
         </tr>
       </thead>
       <tbody>
         @forelse($empleados as $e)
           <tr>
-            <td>{{ $e->id_empleado }}</td>
             <td>{{ optional($e->gimnasio)->nombre ?? '—' }}</td>
-            <td>{{ $e->nombre }} {{ $e->apellidos }}</td>
+            <td>{{ $e->apellidos }}, {{ $e->nombre }}</td>
             <td>{{ $e->email }}</td>
             <td>{{ $e->rol }}</td>
             <td>
@@ -32,10 +59,6 @@
             </td>
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="{{ route('empleados.edit',$e) }}">Editar</a>
-              <form class="d-inline" method="POST" action="{{ route('empleados.destroy',$e) }}" onsubmit="return confirm('¿Eliminar empleado?')">
-                @csrf @method('DELETE')
-                <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-              </form>
             </td>
           </tr>
         @empty

@@ -12,11 +12,29 @@
     <div class="alert alert-success">{{ session('ok') }}</div>
   @endif
 
+  <form method="GET" class="row g-2 mb-3">
+  <div class="col-md-6">
+    <input type="search" name="q" class="form-control" placeholder="Buscar por nombre, apellidos, email o DNI…" value="{{ request('q') }}">
+  </div>
+
+  <div class="col-md-3">
+    <select name="estado" class="form-select">
+      <option value="">Todas</option>
+      <option value="activa" @selected(request('estado')==='activa')>Activas</option>
+      <option value="inactiva" @selected(request('estado')==='inactiva')>Inactivas</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-flex gap-2">
+    <button class="btn btn-primary w-100">Buscar</button>
+    <a class="btn btn-primary" href="{{ route('suscripciones.index') }}">Limpiar</a>
+  </div>
+</form>
+
   <div class="table-responsive">
     <table class="table table-striped align-middle">
       <thead>
         <tr>
-          <th>#</th>
           <th>Usuario</th>
           <th>Plan</th>
           <th>Precio</th>
@@ -31,15 +49,14 @@
       <tbody>
         @forelse($suscripciones as $s)
           <tr>
-            <td>{{ $s->id_suscripcion }}</td>
-            <td>{{ optional($s->usuario)->nombre }} {{ optional($s->usuario)->apellidos }}</td>
+            <td>{{ optional($s->usuario)->apellidos }}, {{ optional($s->usuario)->nombre }} </td>
 
             {{-- Si tienes relación plan() en el modelo: --}}
             <td>{{ optional($s->plan)->nombre ?? '—' }}</td>
 
             <td>{{ number_format($s->precio,2,',','.') }} €</td>
-            <td>{{ $s->fecha_alta }}</td>
-            <td>{{ $s->fecha_baja ?? '—' }}</td>
+            <td>{{ $s->fecha_alta->format('Y-m-d') }}</td>
+            <td>{{ $s->fecha_baja ? $s->fecha_baja->format('Y-m-d') : '—' }}</td>
             <td>
               @if($s->activa)
                 <span class="badge bg-success">Sí</span>
@@ -49,11 +66,26 @@
             </td>            
             @php
               $p = $s->ultimoPago;
-              $mesActual = now()->startOfMonth()->toDateString();
-              $alDia = $p && $p->periodo?->toDateString() === $mesActual;
+
+              $mesActual = now()->startOfMonth();
+              $mesBaja = $s->fecha_baja ? \Carbon\Carbon::parse($s->fecha_baja)->startOfMonth() : null;
+
+              $alDia = false;
+
+              if ($p && $p->periodo) {
+                // Activa: debe cubrir el mes actual
+                if ($s->activa && $p->periodo->greaterThanOrEqualTo($mesActual)) {
+                    $alDia = true;
+                }
+
+                // Inactiva: último periodo coincide con el mes de baja
+                if (!$s->activa && $mesBaja && $p->periodo->equalTo($mesBaja)) {
+                    $alDia = true;
+                }
+              }
             @endphp
             <td>
-              {{ $p ? $p->fecha_pago->format('Y-m-d') : '—' }}
+              {{ $p && $p->periodo ? $p->periodo->format('Y-m') : '—' }}
             </td>
             <td>
               @if($alDia)
@@ -64,15 +96,7 @@
             </td>
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="{{ route('suscripciones.edit',$s) }}">Editar</a>
-              <a href="{{ route('pagos.index', $s) }}" class="btn btn-sm btn-outline-success">Pagos</a>
-              {{-- Solo Admin ve eliminar --}}
-              @if(auth('web')->check() && auth('web')->user()->rol === 'Administrador')
-                <form method="POST" action="{{ route('suscripciones.destroy',$s) }}" class="d-inline"
-                      onsubmit="return confirm('¿Eliminar suscripción? Esta acción no se puede deshacer.')">
-                  @csrf @method('DELETE')
-                  <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                </form>
-              @endif
+              <a href="{{ route('pagos.index', $s) }}" class="btn btn-sm btn-outline-success">Pagos</a>              
             </td>
           </tr>
         @empty

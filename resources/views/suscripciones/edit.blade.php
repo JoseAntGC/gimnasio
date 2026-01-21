@@ -2,8 +2,8 @@
 @section('title','Editar suscripción')
 
 @section('content')
-<div class="container py-4" style="max-width: 720px; margin: 0 auto;">
-  <h1 class="h4 mb-3">Editar suscripción #{{ $suscripcion->id_suscripcion }}</h1>
+<div class="container py-4">
+  <h1 class="h4 mb-3">Editar suscripción #{{($suscripcion->usuario)->apellidos }}, {{ ($suscripcion->usuario)->nombre }}</h1>
 
   @if ($errors->any())
     <div class="alert alert-danger">{{ $errors->first() }}</div>
@@ -17,7 +17,6 @@
       <label class="form-label">Usuario</label>
       <input class="form-control" type="text" readonly
              value="{{ optional($suscripcion->usuario)->nombre }} {{ optional($suscripcion->usuario)->apellidos }} (ID {{ $suscripcion->id_usuario }})">
-      <div class="form-text">El usuario no se puede cambiar una vez creada la suscripción.</div>
     </div>
 
     <div class="mb-3">
@@ -31,7 +30,6 @@
           </option>
         @endforeach
       </select>
-      <div class="form-text">Si cambias de plan, el precio debe actualizarse automáticamente en el backend.</div>
     </div>
 
     {{-- Precio mostrado (NO editable) --}}
@@ -39,13 +37,6 @@
       <label class="form-label">Precio</label>
       <input type="text" class="form-control" id="precioPreview"
              value="{{ number_format($suscripcion->precio,2,',','.') }} €" readonly>
-      <div class="form-text">Este campo es informativo. El precio se gestiona según el plan.</div>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Fecha de baja</label>
-      <input type="date" name="fecha_baja" class="form-control"
-             value="{{ old('fecha_baja',$suscripcion->fecha_baja) }}">
     </div>
 
     <div class="mb-3">

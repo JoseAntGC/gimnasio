@@ -192,12 +192,18 @@ class PagoController extends Controller
         }
 
         $data = $r->validate([
+            'periodo'       => ['required', 'string'],
             'fecha_pago'    => ['nullable', 'date'],
             'metodo'        => ['required', 'in:efectivo,tarjeta,transferencia,bizum'],
             'estado'        => ['required', 'in:pagado,pendiente'],
             'referencia'    => ['nullable', 'string', 'max:100'],
             'observaciones' => ['nullable', 'string', 'max:255'],
         ]);
+
+        // Lógica para el Periodo (Convertir YYYY-MM a YYYY-MM-01)
+        if (!empty($data['periodo'])) {
+            $data['periodo'] = $data['periodo'] . '-01';
+        }
 
         /*
          * Reglas automáticas:
