@@ -19,6 +19,7 @@
         <div class="d-flex flex-wrap gap-2">
           <a class="btn btn-primary" href="{{ route('u.rutinas') }}">Ver rutinas</a>
           <a class="btn btn-primary" href="{{ route('u.perfil') }}">Mi perfil</a>
+          <a class="btn btn-primary" href="{{ route('u.clases') }}">Clases</a>
         </div>
       </div>
     </div>

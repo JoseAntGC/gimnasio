@@ -14,6 +14,7 @@ use App\Http\Controllers\GimnasioContextController;
 use App\Http\Controllers\Admin\ContextoGimnasioController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\PagoController;
+use App\Http\Controllers\UsuarioClasesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +102,7 @@ Route::prefix('usuario')->middleware('auth:usuario')->group(function () {
     Route::get('/perfil',              [UPortal::class, 'perfil'])->name('u.perfil');
     Route::post('/perfil/password',    [UPortal::class, 'updatePassword'])->name('u.perfil.password');
     Route::get('/rutinas',             [UPortal::class, 'rutinas'])->name('u.rutinas');
+    Route::get('/clases', [UsuarioClasesController::class, 'index'])->name('u.clases');
 });
 
 
@@ -132,6 +134,8 @@ Route::middleware(['auth','rol:Administrador,Monitor'])->group(function () {
     Route::get('suscripciones/{suscripcion}/pagos/{pago}/edit', [PagoController::class, 'edit'])->name('pagos.edit');
     Route::put('suscripciones/{suscripcion}/pagos/{pago}', [PagoController::class, 'update'])->name('pagos.update');
 });
+
+
 
 
 
