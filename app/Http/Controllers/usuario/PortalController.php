@@ -82,28 +82,21 @@ class PortalController extends Controller
     {
         $usuario   = Auth::guard('usuario')->user();
 
-        // Categorías permitidas (tal y como están las carpetas)
-        $permitidas = ['Principiante', 'Intermedio', 'Experto'];
-
         // Categoría del usuario (si viene nula o rara, usamos Principiante)
         $categoria = $usuario->categoria ?: 'Principiante';
-        if (!in_array($categoria, $permitidas, true)) {
-            $categoria = 'Principiante';
-        }
-          // Archivos en: public/rutinas/{Categoria}/...
+        
+        // Archivos en: public/rutinas/{Categoria}/...
         $dir = public_path('rutinas/' . $categoria);
 
         $archivos = [];
+
         if (File::isDirectory($dir)) {
             $archivos = collect(File::files($dir))
-                ->sortBy(fn($f) => $f->getFilename())
-                ->map(function ($f) use ($categoria) {
-                    return [
-                        'nombre' => $f->getFilename(),
-                        // URL pública directa
-                        'url'    => asset('rutinas/' . $categoria . '/' . $f->getFilename()),
-                    ];
-                })
+                ->sortBy(fn ($f) => $f->getFilename())
+                ->map(fn ($f) => [
+                    'nombre' => $f->getFilename(),
+                    'url'    => url('rutinas/' . $categoria . '/' . $f->getFilename()),
+                ])
                 ->values()
                 ->toArray();
         }
