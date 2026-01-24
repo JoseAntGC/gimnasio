@@ -91,15 +91,19 @@ class PortalController extends Controller
         $archivos = [];
 
         if (File::isDirectory($dir)) {
-            $archivos = collect(File::files($dir))
-                ->sortBy(fn ($f) => $f->getFilename())
-                ->map(fn ($f) => [
-                    'nombre' => $f->getFilename(),
-                    'url'    => url('rutinas/' . $categoria . '/' . $f->getFilename()),
-                ])
-                ->values()
-                ->toArray();
-        }
+        $archivos = collect(File::files($dir))
+            ->sortBy(fn ($f) => $f->getFilename())
+            ->map(function ($f) use ($categoria) {
+                return [
+                    // Quitamos la extensión para mostrar un nombre limpio
+                    'nombre' => pathinfo($f->getFilename(), PATHINFO_FILENAME),
+                    // Usamos asset() para generar la URL correcta
+                    'url'    => asset('rutinas/' . $categoria . '/' . $f->getFilename()),
+                ];
+            })
+            ->values()
+            ->all();
+    }
 
         return view('usuario.rutinas', compact('usuario','categoria','archivos'));
     }
