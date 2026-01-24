@@ -17,7 +17,7 @@
         @foreach($archivos as $f)
           <a
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center fondoOpaco"
-            href="{{ asset('rutinas/' . ($categoria) . '/' . $f['archivo']) }}"
+            href="{{ asset('rutinas/' . $categoria . '/' . $f['archivo']) }}"
             target="_blank"
             rel="noopener"
           >
