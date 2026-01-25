@@ -91,4 +91,14 @@ class Gimnasio extends Model
     {
         return $this->hasMany(Suscripcion::class, 'id_gimnasio', 'id_gimnasio');
     }
+
+    /**
+     * Relación: un gimnasio tiene muchos usuarios.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function usuarios()
+    {
+        return $this->hasMany(\App\Models\Usuario::class, 'id_gimnasio', 'id_gimnasio');
+    }
 }

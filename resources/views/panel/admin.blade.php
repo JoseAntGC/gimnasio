@@ -9,6 +9,7 @@
       <p class="mb-3">Desde aquí podrás gestionar el gimnasio.</p>
 
       <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" href="{{ route('gimnasios.index') }}">Gestionar gimnasios</a>
         <a class="btn btn-primary" href="{{ route('servicios.index') }}">Gestionar servicios</a>
         <a class="btn btn-primary" href="{{ route('suscripciones.index') }}">Gestionar suscripciones</a>
         <a class="btn btn-primary" href="{{ route('empleados.index') }}">Gestionar empleados</a>

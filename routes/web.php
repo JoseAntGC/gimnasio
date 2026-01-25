@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GimnasioController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\SuscripcionController;
 use App\Http\Controllers\EmpleadoController;
@@ -47,6 +48,13 @@ Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 // Punto de control para redirigir a los usuarios según su rol asignado
 Route::middleware('auth')->get('/panel', [DashboardController::class,'redirectByRole'])->name('panel');
+
+
+//ruta de gestion de gimnasios
+Route::middleware(['auth','rol:Administrador'])->group(function () {
+    Route::resource('gimnasios', GimnasioController::class)->except(['show']);
+});
+
 
 
 /**
